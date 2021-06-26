@@ -11,7 +11,7 @@ app.use(express.json())
 const registerRouters = require('./controllers/register')
 app.use('/api/users', registerRouters)
 app.get('/*', function (req, res) {
-  res.sendFile(path.join('build', 'index.html'), (err) => {
+  res.sendFile(path.join(__dirname), (err) => {
     if(err) {
       res.status(500).send(err)
     }
