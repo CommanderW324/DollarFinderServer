@@ -13,7 +13,7 @@ const loginRouters = require('./controllers/login')
 app.use('/api/users', registerRouters)
 app.use('/login', loginRouters)
 app.get('/*', function (req, res) {
-  res.sendFile(path.join(__dirname,'build/index.html'), (err) => {
+  res.sendFile(path.join('./build/index.html'), (err) => {
     if(err) {
       res.status(500).send(err)
     }
