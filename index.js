@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express')
-const app = express.Router()
+const app = express()
+const router = express.Router()
 const cors = require('cors')
 
 app.use(cors())
@@ -10,7 +11,7 @@ const registerRouters = require('./controllers/register')
 const loginRouters = require('./controllers/login')
 app.use('/api/users', registerRouters)
 app.use('/login', loginRouters)
-app.get('/*', function (req, res) {
+router.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname,'index.html'), (err) => {
     if(err) {
       res.status(500).send(err)
