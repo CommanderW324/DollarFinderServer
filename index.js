@@ -15,7 +15,7 @@ app.use('/login', loginRouters)
 app.get('/*', function (req, res) {
   res.sendFile(path.join('./build/index.html'), (err) => {
     if(err) {
-      res.status(500).send(err)
+      res.status(500).send("test")
     }
   });
 });
