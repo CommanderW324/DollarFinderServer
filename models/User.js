@@ -7,10 +7,10 @@ console.log('connecting to', url)
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
   .then(result => {
-    console.log('connected to MongoDB')
+    console.log('You have connected to MongoDB')
   })
   .catch((error) => {
-    console.log('error connecting to MongoDB:', error.message)
+    console.log('error:', error.message)
   })
 
 const userSchema = new mongoose.Schema({

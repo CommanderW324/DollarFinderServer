@@ -9,9 +9,11 @@ app.use(cors())
 app.use(express.static('build'))
 app.use(express.json())
 const registerRouters = require('./controllers/register')
+const loginRouters = require('./controllers/login')
 app.use('/api/users', registerRouters)
+app.use('/login', loginRouters)
 app.get('/*', function (req, res) {
-  res.sendFile(path.join(__dirname), (err) => {
+  res.sendFile(path.join(__dirname,'build/index.html'), (err) => {
     if(err) {
       res.status(500).send(err)
     }
