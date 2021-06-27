@@ -1,5 +1,3 @@
-
-
 require('dotenv').config()
 const express = require('express')
 const app = express()
@@ -13,7 +11,7 @@ const loginRouters = require('./controllers/login')
 app.use('/api/users', registerRouters)
 app.use('/login', loginRouters)
 app.get('/*', function (req, res) {
-  res.sendFile(path.join(__dirname,'build'), (err) => {
+  res.sendFile("./index.html", (err) => {
     if(err) {
       res.status(500).send(err)
     }
