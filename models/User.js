@@ -16,7 +16,7 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
 const userSchema = new mongoose.Schema({
   username: String,
   email: String,
-  password: String,
+  password: String
 })
 
 userSchema.set('toJSON', {
