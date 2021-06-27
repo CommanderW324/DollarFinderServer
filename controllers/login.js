@@ -20,9 +20,7 @@ loginRouter.post('/', (request, response) => {
                 return response.status(200).json({success: 'You logged in', logintoken})
             } else {
                 return response.status(400).json({
-                    error: 'non existing username/wrong password',
-                    database: user.password,
-                    sent: body.password
+                    error: 'non existing username/wrong password'
                 })
             }
         })
