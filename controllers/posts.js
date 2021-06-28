@@ -4,11 +4,10 @@ const postRoute = require('express').Router()
 const token = require('jsonwebtoken')
 require('dotenv').config()
 var bodyParser = require('body-parser');
-var fs = require('fs');
+
 
 postRoute.get('/', (request, response) => {
     const content = request.body
-    const param = request.para
     const allUsers = Post.find({}).then(posts => {
         return response.status(200).send(posts)
     })
@@ -49,8 +48,6 @@ postRoute.put('/:id', (request, response) => {
 postRoute.post('/', async (request, response) => {
     const content = request.body
     let decode
-    
-    content.date = Date.now()
     try{
         decode = token.verify(content.logintoken, process.env.SECRET)
     } catch {
