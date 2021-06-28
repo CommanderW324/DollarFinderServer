@@ -14,7 +14,7 @@ register.post('/', (request, response) => {
         return response.status(400).json({error: "Please send a password"})
       } 
     
-  const password_hashed = bcrypt.hash(body.password, 10).then(hashed => {
+  const password_hashed = bcrypt.hash(content.password, 10).then(hashed => {
     const newUser = new User({
       username: content.username,
       email: content.email,

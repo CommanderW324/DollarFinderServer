@@ -25,7 +25,7 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
       },
       posting_date: Date
     })
-    userSchema.set('toJSON', {
+    postSchema.set('toJSON', {
         transform: (receive, returned) => {
           returned.id = returned._id.toString()
           delete returned._id
