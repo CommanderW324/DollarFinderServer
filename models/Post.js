@@ -23,6 +23,10 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
           required: true,
           max: 100000
       },
+      image: {
+        binData: Buffer,
+        contentType: String
+      },
       posting_date: Date
     })
     postSchema.set('toJSON', {

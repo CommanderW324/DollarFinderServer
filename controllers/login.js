@@ -20,7 +20,7 @@ login.post('/', (request, response) => {
             if(verified) {
                 const logintoken = token.sign({username: user.username, id: user.__id}, process.env.SECRET)
                 return response.status(200).json({success: 'You logged in',
-                username: user.username, logintoken})
+                username: user.username,email: user.email, dateJoined: user.dateJoined,logintoken})
             } else {
                 return response.status(400).json({
                     error: 'wrong password'
