@@ -17,13 +17,18 @@ postRoute.get('/', (request, response) => {
 
 postRoute.delete('/:id', async (request, response) => {
     const content = request.body
-    const usernameDeleting = content.username
-    const userDeleting = await Post.findOne({username: usernameDeleting})
+    let decode
+    try{
+        decode = token.verify(content.logintoken, process.env.SECRET)
+    } catch {
+        return response.status(401).send({error: "Invalid token"})
+    }
+    
+    const userDeleting = await Post.findOne({id: decode.id})
     const deletePostId = request.params.id
     const postDeleted = await Post.findOne({id: deletePostId})
-    if(userDeleting.id === postDeleted ) {
-
-    }
+    if(userDeleting)
+    
     const deletion = await Post.deleteOne({id: deleteId}, err =>{
         if(err){
             return response.status(404).send({error: "an Error has occured, user may not be found"})
@@ -34,9 +39,10 @@ postRoute.delete('/:id', async (request, response) => {
 
 })
 postRoute.put('/:id', (request, response) => {
-    const content = request.body
-    const newTextContent = content.content
-    const newImage = content.image
+    //tobe completed
+    // const content = request.body
+    // const newTextContent = content.content
+    // const newImage = content.image
     
     
 })
@@ -48,14 +54,11 @@ postRoute.post('/', async (request, response) => {
     try{
         decode = token.verify(content.logintoken, process.env.SECRET)
     } catch {
-        return response.status(401).send({error: "Wrong token"})
+        return response.status(401).send({error: "Invalid token"})
     }
     const userId = decode.id
     if(!token) {
         return response.status(401).send({error: "No token given"})
-    }
-    if(!decode) {
-        return response.status(401).send({error: "Invalid Token"})
     }
     const user = await User.findOne({id: decode.id})
     if(!user) {
@@ -63,7 +66,7 @@ postRoute.post('/', async (request, response) => {
     } else {
         content.userId = userId
         const newPost = await Post.create(content)
-        return response.status(200).send(newPost)
+        return response.status(200)
     }
 })
 module.exports = postRoute
