@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const register = require('express').Router()
 
 register.post('/', (request, response) => {
+ 
     const content = request.body
       if(content.username === undefined) {
         return response.status(400).json({error: "Please send a name"})
@@ -18,7 +19,7 @@ register.post('/', (request, response) => {
     const newUser = new User({
       username: content.username,
       email: content.email,
-      password: hashed,
+      password: hashed
     })
       newUser.save().then(savedUser => {
       response.status(200)
