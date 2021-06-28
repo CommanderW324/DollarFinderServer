@@ -27,7 +27,7 @@ postRoute.delete('/:id', async (request, response) => {
     const userDeleting = await Post.findOne({id: decode.id})
     const deletePostId = request.params.id
     const postDeleted = await Post.findOne({id: deletePostId})
-    if(userDeleting)
+    
     
     const deletion = await Post.deleteOne({id: deleteId}, err =>{
         if(err){
