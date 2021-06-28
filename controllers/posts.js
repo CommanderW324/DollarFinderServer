@@ -1,11 +1,14 @@
 const Post = require('../models/Post')
+const User = require('../models/User')
 const postRoute = require('express').Router()
 const token = require('jsonwebtoken')
+require('dotenv').config()
 var bodyParser = require('body-parser');
 var fs = require('fs');
 
 postRoute.get('/', (request, response) => {
     const content = request.body
+    const param = request.para
     const allUsers = Post.find({}).then(posts => {
         return response.status(200).send(posts)
     })
@@ -31,14 +34,36 @@ postRoute.delete('/:id', async (request, response) => {
 
 })
 postRoute.put('/:id', (request, response) => {
-
-})
-postRoute.post('/',(request, response) => {
     const content = request.body
+    const newTextContent = content.content
+    const newImage = content.image
+    
+    
+})
+postRoute.post('/', async (request, response) => {
+    const content = request.body
+    let decode
+    
     content.date = Date.now()
-    const postContent = Post.create(content).then(
-        result => {
-            return response.status(200).send(result)
-        })
+    try{
+        decode = token.verify(content.logintoken, process.env.SECRET)
+    } catch {
+        return response.status(401).send({error: "Wrong token"})
+    }
+    const userId = decode.id
+    if(!token) {
+        return response.status(401).send({error: "No token given"})
+    }
+    if(!decode) {
+        return response.status(401).send({error: "Invalid Token"})
+    }
+    const user = await User.findOne({id: decode.id})
+    if(!user) {
+        return response.status(401).send({error: "wrong Token"})
+    } else {
+        content.userId = userId
+        const newPost = await Post.create(content)
+        return response.status(200).send(newPost)
+    }
 })
 module.exports = postRoute

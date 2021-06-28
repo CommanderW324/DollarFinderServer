@@ -21,7 +21,7 @@ register.post('/', (request, response) => {
       password: hashed,
     })
       newUser.save().then(savedUser => {
-      response.json(savedUser)
+      response.status(200)
     })
   })
   })
