@@ -25,10 +25,12 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
           required: true,
           max: 100000
       },
+
       posting_date: Date,
       location: {
         type: String
       }, price: {
+
         type: Number
       }
     })
