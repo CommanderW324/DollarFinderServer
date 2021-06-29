@@ -25,7 +25,10 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
           required: true,
           max: 100000
       },
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1814757c1c125395c4dd639c6e7f4dc3f37297c8
       posting_date: Date,
       location: {
         type: String
