@@ -14,28 +14,23 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
   })
 
   const postSchema = new mongoose.Schema({
-    title:{
-      type: String
-    },
-    location:{
-      type:String
-    }, price: {
-      type:Number
-    },
+      title: {
+        type:String
+      },
       userId: {
-          type: mongoose.Schema.Types.ObjectId
+          type: mongoose.Schema.Types.ObjectId,
       },
       description: {
           type: String,
           required: true,
           max: 100000
       },
-      img: {
-        binData: Buffer,
-        contentType: String
-      },
       posting_date: Date,
-      
+      location: {
+        type: String
+      }, price: {
+        type: Number
+      }
     })
     postSchema.set('toJSON', {
         transform: (receive, returned) => {
