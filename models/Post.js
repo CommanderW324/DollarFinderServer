@@ -14,6 +14,12 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
   })
 
   const postSchema = new mongoose.Schema({
+      frontend_Id: {
+        type: Number
+      },
+      img: {
+        type: Buffer
+      },
       title: {
         type:String
       },
@@ -22,11 +28,10 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
       },
       description: {
           type: String,
-          required: true,
           max: 100000
       },
 
-      posting_date: Date,
+      date: Date,
       location: {
         type: String
       }, price: {

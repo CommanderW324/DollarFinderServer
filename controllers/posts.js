@@ -48,6 +48,7 @@ postRoute.get('/', (request, response) => {
 // })
 postRoute.post('/', async (request, response) => {
     const content = request.body
+
     let decode
     try{
         decode = token.verify(content.logintoken, process.env.SECRET)
@@ -65,16 +66,23 @@ postRoute.post('/', async (request, response) => {
         return response.status(401).send({error: "wrong Token"})
     } else {
         content.userId = userId
-        const newPost = Post({
-            title: content.title,
-            location: content.location,
-            price: content.price,
-            description: content.description,
-            posting_date: Date.now(),
-            userId: user.id
-        })
-        const save = await newPost.save()
-        return response.status(200).json({sucess: "sucessful"})
+        const arrOfPosts = content.data
+        for(let i = 0; i < arrOfPosts.length; i++) {
+            const content = arrOfPosts[i]
+            const newPost = Post({
+                frontend_id: content.id,
+                img: content.img,
+                title: content.title,
+                location: content.location,
+                price: content.price,
+                description: content.description,
+                date: Date.now(),
+                userId: user.id
+            })
+            const save = await newPost.save()
+        }
+        
+        return response.status(200).json(arrOfPosts)
     }
 
 })
