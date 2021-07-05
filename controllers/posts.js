@@ -8,7 +8,17 @@ const token = require('jsonwebtoken')
 postRoute.get('/', (request, response) => {
     const content = request.body
     const allUsers = Post.find({}).then(posts => {
-        return response.status(200).send(posts)
+        const length = posts.length
+        const newPosts = []
+        for(let i = 0; i < length; i++) {
+            let decodeBuffer
+            if(posts[i].img !== undefined) {
+                decodeBuffer = posts[i].img.toString()
+            }
+            const post = {...posts[i].toJSON(), message: "Added" , img: decodeBuffer}
+            newPosts.push(post)
+        }
+        return response.status(200).send(newPosts)
     })
     
 })
