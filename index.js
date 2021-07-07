@@ -9,7 +9,7 @@ app.use(express.json())
 const registerRoutes = require('./controllers/register')
 const loginRoutes = require('./controllers/login')
 const postRoutes = require('./controllers/posts')
-app.use('/api/users', registerRoutes)
+app.use('/register', registerRoutes)
 app.use('/login', loginRoutes)
 app.use('/posts', postRoutes)
 
