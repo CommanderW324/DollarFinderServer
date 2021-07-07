@@ -35,13 +35,13 @@ register.post('/', async (request, response) => {
        pass: process.env.senderPassword
      }
    })
-   const confirmationLink = "localhost:3001/register/" + confirmationCode 
+   const confirmationLink = process.env.Homepage + "/register/" + confirmationCode 
    let message = {
     from: process.env.senderEmail,
     to: content.email,
     subject: "Verification for $Finder",
     text: "Please verify your account ! follow the following link" + confirmationLink,
-    html: "<p>Please verify your account ! follow the following link" + confirmationLink + "</p>"
+    html: "<p>Please verify your account ! follow the following link " + confirmationLink + "</p>"
   };
   try{
     transport.sendMail(message)
