@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const register = require('express').Router()
 const token = require('jsonwebtoken')
 const nodeMailer = require('nodemailer')
+
 register.post('/', async (request, response) => {
  
   let content = request.body
@@ -18,7 +19,7 @@ register.post('/', async (request, response) => {
     // } 
   
   let password_hashed = await bcrypt.hash(content.password, 10)
-  const confirmationCode = token.sign({username: content.email}, process.env.SECRET)
+  const confirmationCode = token.sign({email: content.email}, process.env.SECRET)
  let newUser = new User({
      username: content.username,
      email: content.email,
@@ -54,22 +55,80 @@ register.post('/', async (request, response) => {
 })
 register.get('/:confirmationCode', async (request, response) => {
   const code = request.params.confirmationCode
+  let verification 
+  try {
+    verification = token.verify(code, process.env.SECRET)
+  } catch {
+    return response.status(401).send({error: "Invalid Link"})
+  }
+  const userEmail = verification.email
+  const user = await User.findOne({email: userEmail})
+  
+  if(!user) {
+      return response.status(401).send({error: "wrong Token"})
+  } else {
+    try{
+      user.active = true
+      await user.save()
+    } catch {
+      return response.status(404).send({error: "cannot update"})
+    }
+    
+  }
+  return response. status(200).end()
+  })
+  register.post('/forgot', async (request, response) => {
+    let content = request.body
+    let foundUser = User.findOne({email: content.email })
+    let forgotCode = token.sign({email: content.email}, process.env.SECRETCODE)
+    let transport = nodeMailer.createTransport({
+      service:"Gmail",
+      auth:{
+        user: process.env.senderEmail,
+        pass: process.env.senderPassword
+      }
+    })
+    const confirmationLink = process.env.Homepage + "/register/forgot" + forgotCode
+    let message = {
+     from: process.env.senderEmail,
+     to: content.email,
+     subject: "Password Reset",
+     text: "Change your password using the following link" + confirmationLink,
+     html: "<p>Change your password by following this link :  " + confirmationLink + "</p>"
+   };
+   try{
+     transport.sendMail(message)
+   } catch {
+     return response.status(404).end()
+   }
+    
+      return response.status(200).end()
+  })
+register.get('/forgot/:forgotCode', async (request, response) => {
+    const code = request.params.forgotCode
+    const newPassword = request.password
   let verification
   try {
     verification = token.verify(code, process.env.SECRET)
   } catch {
     return response.status(401).send({error: "Invalid Link"})
   }
-  const userId = verification.id
-  const user = await User.findOne({id: userId})
+  const userEmail = verification.email
+  const user = await User.findOne({email: userEmail})
+  
   if(!user) {
       return response.status(401).send({error: "wrong Token"})
   } else {
-    const update = await User.updateOne({id: userId}, {
-      active: true
-    })
+    try{
+      user.password = newPassword
+      await user.save()
+    } catch {
+      return response.status(404).send({error: "cannot update"})
+    }
+    
   }
   return response. status(200).end()
+
   })
 
   module.exports = register
