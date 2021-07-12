@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt')
 const register = require('express').Router()
 const token = require('jsonwebtoken')
 const nodeMailer = require('nodemailer')
-
 register.post('/', async (request, response) => {
  
   let content = request.body
@@ -19,7 +18,7 @@ register.post('/', async (request, response) => {
     // } 
   
   let password_hashed = await bcrypt.hash(content.password, 10)
-  const confirmationCode = token.sign({email: content.email}, process.env.SECRET)
+  const confirmationCode = token.sign({username: content.email}, process.env.SECRET)
  let newUser = new User({
      username: content.username,
      email: content.email,
@@ -113,22 +112,16 @@ register.post('/forgot/:forgotCode', async (request, response) => {
   } catch {
     return response.status(401).send({error: "Invalid Link"})
   }
-  const userEmail = verification.email
-  const user = await User.findOne({email: userEmail})
-  
+  const userId = verification.id
+  const user = await User.findOne({id: userId})
   if(!user) {
       return response.status(401).send({error: "wrong Token"})
   } else {
-    try{
-      user.password = newPassword
-      await user.save()
-    } catch {
-      return response.status(404).send({error: "cannot update"})
-    }
-    
+    const update = await User.updateOne({id: userId}, {
+      active: true
+    })
   }
   return response. status(200).end()
-
   })
 
   module.exports = register
