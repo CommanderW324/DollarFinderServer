@@ -19,7 +19,8 @@ const userSchema = new mongoose.Schema({
   email: String,
   password: String,
   active: Boolean,
-  confirmationCode : String
+  confirmationCode : String,
+  posts:[mongoose.Schema.Types.ObjectId]
 })
 
 userSchema.set('toJSON', {
