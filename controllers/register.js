@@ -104,7 +104,7 @@ register.get('/:confirmationCode', async (request, response) => {
     
       return response.status(200).end()
   })
-register.get('/forgot/:forgotCode', async (request, response) => {
+register.post('/forgot/:forgotCode', async (request, response) => {
     const code = request.params.forgotCode
     const newPassword = request.password
   let verification

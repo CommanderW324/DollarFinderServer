@@ -75,7 +75,8 @@ postRoute.post('/', async (request, response) => {
     if(!user) {
         return response.status(401).send({error: "wrong Token"})
     } else {
-        content.userId = userId
+        
+        const userPosting = User.find({id: userId})
         const arrOfPosts = content.data
         for(let i = 0; i < arrOfPosts.length; i++) {
             const content = arrOfPosts[i]
@@ -90,6 +91,7 @@ postRoute.post('/', async (request, response) => {
                 userId: user.id
             })
             const save = await newPost.save()
+            userPosting.posts.push(newPost.__id)
         }
         
         return response.status(200).json(arrOfPosts)
