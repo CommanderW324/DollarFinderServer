@@ -24,7 +24,8 @@ register.post('/', async (request, response) => {
      email: content.email,
      password: password_hashed,
      active: false,
-     confirmationCode: confirmationCode
+     confirmationCode: confirmationCode,
+     posts: []
    })
    await User.create(newUser)
    
@@ -80,6 +81,16 @@ register.get('/:confirmationCode', async (request, response) => {
     let content = request.body
     let foundUser = User.findOne({email: content.email })
     let forgotCode = token.sign({email: content.email}, process.env.SECRETCODE)
+    let password_hashed = await bcrypt.hash(forgotCode, 10)
+    if(!foundUser) {
+        return response.status(401).send({error: "wrong Token"})
+    } else {
+      const update = await User.updateOne({email: content.email}, {
+        password: password_hashed
+      })
+    }
+      
+    
     let transport = nodeMailer.createTransport({
       service:"Gmail",
       auth:{
@@ -87,14 +98,16 @@ register.get('/:confirmationCode', async (request, response) => {
         pass: process.env.senderPassword
       }
     })
+
     const confirmationLink = process.env.Homepage + "/register/forgot" + forgotCode
     let message = {
      from: process.env.senderEmail,
      to: content.email,
      subject: "Password Reset",
-     text: "Change your password using the following link" + confirmationLink,
-     html: "<p>Change your password by following this link :  " + confirmationLink + "</p>"
+     text: "Change your password using the following new password",
+     html: "<p>Change your password by logging in using this new password :  " + forgotCode + "</p>"
    };
+   
    try{
      transport.sendMail(message)
    } catch {
@@ -103,25 +116,25 @@ register.get('/:confirmationCode', async (request, response) => {
     
       return response.status(200).end()
   })
-register.post('/forgot/:forgotCode', async (request, response) => {
-    const code = request.params.forgotCode
-    const newPassword = request.password
-  let verification
-  try {
-    verification = token.verify(code, process.env.SECRET)
-  } catch {
-    return response.status(401).send({error: "Invalid Link"})
-  }
-  const userId = verification.id
-  const user = await User.findOne({id: userId})
-  if(!user) {
-      return response.status(401).send({error: "wrong Token"})
-  } else {
-    const update = await User.updateOne({id: userId}, {
-      active: true
-    })
-  }
-  return response. status(200).end()
-  })
+// register.post('/forgot/:forgotCode', async (request, response) => {
+//     const code = request.params.forgotCode
+//     const newPassword = request.password
+//   let verification
+//   try {
+//     verification = token.verify(code, process.env.SECRETCODE)
+//   } catch {
+//     return response.status(401).send({error: "Invalid Link"})
+//   }
+//   const userEmail = verification.email
+//   const user = await User.findOne({email: userEmail})
+//   if(!user) {
+//       return response.status(401).send({error: "wrong Token"})
+//   } else {
+//     const update = await User.updateOne({email: userEmail}, {
+//       password: code
+//     })
+//   }
+//   return response. status(200).end()
+//   })
 
   module.exports = register

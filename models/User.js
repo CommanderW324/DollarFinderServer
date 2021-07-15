@@ -28,6 +28,7 @@ userSchema.set('toJSON', {
     returned.id = returned._id.toString()
     delete returned._id
     delete returned.__v
+    delete returned.password
   }
 })
 

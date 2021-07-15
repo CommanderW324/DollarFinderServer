@@ -10,9 +10,11 @@ app.use(express.json())
 const registerRoutes = require('./controllers/register')
 const loginRoutes = require('./controllers/login')
 const postRoutes = require('./controllers/posts')
+const accountRoutes = require('./controllers/account')
 app.use('/register', registerRoutes)
 app.use('/login', loginRoutes)
 app.use('/posts', postRoutes)
+app.use('/account', accountRoutes)
 
 
 const PORT = process.env.PORT || 3001
