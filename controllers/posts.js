@@ -57,7 +57,7 @@ postRoute.get('/', (request, response) => {
 
 // })
 postRoute.post('/', async (request, response) => {
-    const content = request.body
+    const content = request.headers
 
     let decode
     try{

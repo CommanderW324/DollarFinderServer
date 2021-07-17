@@ -18,7 +18,7 @@ register.post('/', async (request, response) => {
     // } 
   
   let password_hashed = await bcrypt.hash(content.password, 10)
-  const confirmationCode = token.sign({username: content.email}, process.env.SECRET)
+  const confirmationCode = token.sign({email: content.email}, process.env.SECRET)
  let newUser = new User({
      username: content.username,
      email: content.email,
