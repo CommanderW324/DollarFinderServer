@@ -15,12 +15,13 @@ account.get('/', async (request,response) => {
         return response.status(401).send({error: "invalid Token"})
     }
     const userId = decode.id
-    const user = await User.findOne({id: userId})
+    const user = await User.findOne({_id: userId})
     if(!user) {
         return response.status(401).send({error: "wrong Token"})
     } else {
         return response.status(200).send(user)
     }
+    // return response.status(200).send(decode)
 })
 account.post('/change', async (request, response) => {
     const logintoken = request.headers.logintoken
