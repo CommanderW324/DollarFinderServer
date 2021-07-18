@@ -38,7 +38,7 @@ account.post('/change', async (request, response) => {
     if(!token) {
         return response.status(401).send({error: "No token given"})
     }
-    const user = await User.findOne({id: decode.id})
+    const user = await User.findOne({_id: decode.id})
     if(!user) {
         return response.status(401).send({error: "wrong Token"})
     } else {
@@ -54,24 +54,26 @@ account.post('/change', async (request, response) => {
         
         return response.status(200).end()
     }
+    
 })
-account.get('/posts/:postid', (request, response) => {
-    // const header = request.headers
-    // const logintoken = header.logintoken
-    // let decode
-    // try{
-    //     decode = token.verify(logintoken, process.env.SECRET)
+account.get('/posts', async (request, response) => {
+    const header = request.headers
+    const logintoken = header.logintoken
+    let decode
+    try{
+        decode = token.verify(logintoken, process.env.SECRET)
         
-    // } catch {
-    //     return response.status(401).send({error: "invalid Token"})
-    // }
-    // const userId = decode.id
-    // const user = await User.findOne({id: userId})
-    // if(!user) {
-    //     return response.status(401).send({error: "wrong Token"})
-    // } else {
-        
-    // }
+    } catch {
+        return response.status(401).send({error: "invalid Token"})
+    }
+    const userId = decode.id
+    const user = await User.findOne({id: userId})
+    if(!user) {
+        return response.status(401).send({error: "wrong Token"})
+    } else {
+        const posts = await Post.findAll({userId: userId})
+        return response.status(200).send(posts)
+    }
 
 })
 module.exports = account

@@ -1,5 +1,6 @@
 require('dotenv').config()
 const mongoose = require('mongoose')
+const User = require('../models/User')
 
 const url = process.env.MONGODB_URI
 
@@ -32,10 +33,16 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
       },
 
       date: Date,
+      locationurl: {
+        type: String
+      },
       location: {
         type: String
       }, price: {
-
+        type: Number
+      },upvotes: {
+        type: Number
+      }, downvotes: {
         type: Number
       }
     })

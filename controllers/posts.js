@@ -91,7 +91,7 @@ postRoute.post('/', async (request, response) => {
                 userId: user.id
             })
             const save = await newPost.save()
-            // userPosting.posts.push(newPost.__id)
+            userPosting.posts.push(newPost.id)
         }
         
         return response.status(200).json(arrOfPosts)
