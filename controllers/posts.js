@@ -120,7 +120,7 @@ postRoute.post('/', async (request, response) => {
         })
         const save = await newPost.save()
         
-        return response.status(200).json({route: "localhost:3001/posts/" + newPost._id})
+        return response.status(200).json({route: "dollarfinder.herokuapp.com/posts/" + newPost._id})
     }
     
 
