@@ -19,7 +19,7 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
         type: Number
       },
       img: {
-        type: Buffer
+        type: String
       },
       title: {
         type:String

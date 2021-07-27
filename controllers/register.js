@@ -25,9 +25,14 @@ register.post('/', async (request, response) => {
      password: password_hashed,
      active: false,
      confirmationCode: confirmationCode,
-     posts: []
+     posts: [],
+     logged: false
    })
-   await User.create(newUser)
+   try{
+     const trial =  await User.create(newUser)
+   } catch (error) {
+     return response.status(400).send({error: error.message})
+   }
    
    let transport = nodeMailer.createTransport({
      service:"Gmail",
@@ -46,8 +51,8 @@ register.post('/', async (request, response) => {
   };
   try{
     transport.sendMail(message)
-  } catch {
-    return response.status(404).end()
+  } catch (error){
+    return response.status(404).send({error: "Cannot Send"})
   }
    
      return response.status(200).end()

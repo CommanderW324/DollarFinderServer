@@ -15,11 +15,26 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
   })
 
 const userSchema = new mongoose.Schema({
-  username: String,
-  email: String,
-  password: String,
+  username: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  email: {
+    type: String, 
+    required: true,
+    unique: true, 
+    match: /.+\@.+\..+/
+  },
+  password: {
+    type: String,
+    required: true
+  },
   active: Boolean,
   confirmationCode : String,
+  logintoken: String,
+  logged: Boolean,
+  profile: String,
   posts:[mongoose.Schema.Types.ObjectId]
 })
 
