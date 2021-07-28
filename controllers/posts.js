@@ -107,29 +107,31 @@ postRoute.get('/:postId', async (request,response) => {
     }
 })
 
-// postRoute.delete('/:id', async (request, response) => {
-//     const content = request.body
-//     let decode
-//     try{
-//         decode = token.verify(content.logintoken, process.env.SECRET)
-//     } catch {
-//         return response.status(401).send({error: "Invalid token"})
-//     }
-    
-//     const userDeleting = await Post.findOne({id: decode.id})
-//     const deletePostId = request.params.id
-//     const postDeleted = await Post.findOne({id: deletePostId})
-    
-    
-//     const deletion = await Post.deleteOne({id: deleteId}, err =>{
-//         if(err){
-//             return response.status(404).send({error: "an Error has occured, user may not be found"})
-//         } else {
-//             return response.status(200).send({success: "succesfully removed a post"})
-//         }
-//     } )
-
-// })
+postRoute.delete('/:id', async (request, response) => {
+    const content = request.body
+    const logintoken = request.headers.logintoken
+    let decode
+    try{
+        decode = token.verify(logintoken, process.env.SECRET)
+    } catch {
+        return response.status(401).send({error: "Invalid token"})
+    }
+    const userId = decode.id
+    const userDeleting = await Post.findOne({_id: userId})
+    const deletePostId = request.params.id
+    const postDeleted = await Post.findOne({_id: deletePostId})
+    if(postDeleted.userId.toString() === userId) {
+        const deletion = await Post.deleteOne({_id: deletePostId}, err =>{
+            if(err){
+                return response.status(404).send({error: "an Error has occured, user may not be found"})
+            } else {
+                return response.status(200).send({success: "succesfully removed a post"})
+            }
+        } )
+    } else {
+        return response.status(201).send({error: "You are not the creator of this post"})
+    }
+})
 // postRoute.put('/:id', (request, response) => {
 
 //     //tobe completed
