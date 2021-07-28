@@ -14,10 +14,7 @@ postRoute.get("/", (request, response) => {
     const sortMethod = request.headers.sortmethod;
     console.log(request.headers.sortmethod)
     const allUsers = Post.find({}).then((newPosts) => {
-      console.log("its me")
       function sortJson(array, prop, propType, asc) {
-        console.log("Before")  
-        console.log(array)
           
         switch (propType) {
             case "int":
@@ -74,8 +71,7 @@ postRoute.get("/", (request, response) => {
           default:
             break;
         }
-        console.log("after")
-      console.log(array)
+    
       }
       switch (sortMethod) {
         
@@ -86,14 +82,13 @@ postRoute.get("/", (request, response) => {
           sortJson(newPosts, "price", "int", false);
           break;
         case "2":
-            console.log("Ive been wondering")
-          sortJson(newPosts, "date", "intAsString", false);
+            
+          sortJson(newPosts, "date", "int", false);
           break;
         case "3":
-          sortJson(newPosts, "date", "intAsString", true);
+          sortJson(newPosts, "date", "int", true);
           break;
         default:
-            console.log("if after all these")
           break;
       }
       
