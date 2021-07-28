@@ -26,7 +26,8 @@ register.post('/', async (request, response) => {
      active: false,
      confirmationCode: confirmationCode,
      posts: [],
-     logged: false
+     logged: false,
+     date: Date.now()
    })
    try{
      const trial =  await User.create(newUser)

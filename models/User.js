@@ -31,6 +31,7 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   active: Boolean,
+  date: Date,
   confirmationCode : String,
   logintoken: String,
   logged: Boolean,

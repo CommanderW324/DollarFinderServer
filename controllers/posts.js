@@ -12,7 +12,6 @@ s3 = new AWS.S3({apiVersion: '2006-03-01'})
 postRoute.get("/", (request, response) => {
     const content = request.body;
     const sortMethod = request.headers.sortmethod;
-    console.log(request.headers.sortmethod)
     const allUsers = Post.find({}).then((newPosts) => {
       function sortJson(array, prop, propType, asc) {
           
