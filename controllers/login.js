@@ -27,7 +27,7 @@ login.post('/', async (request, response) => {
                 user.logged = true
                 user.logintoken = logintoken
                 await user.save()
-                return response.status(200).json(logintoken)
+                return response.status(200).send(logintoken)
             } catch {
                 return response.status(404).send({error: "cannot Login"})
             }

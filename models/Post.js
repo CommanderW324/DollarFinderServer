@@ -33,7 +33,7 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
       },
 
       date: Date,
-      locationurl: {
+      locationUrl: {
         type: String
       },
       location: {
@@ -48,7 +48,7 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
     })
     postSchema.set('toJSON', {
         transform: (receive, returned) => {
-          returned.id = returned._id.toString()
+          returned._id = returned._id.toString()
           delete returned._id
           delete returned.__v
         }

@@ -40,8 +40,8 @@ const userSchema = new mongoose.Schema({
 
 userSchema.set('toJSON', {
   transform: (receive, returned) => {
-    returned.id = returned._id.toString()
-    delete returned._id
+    returned._id = returned._id.toString()
+    delete returned.id
     delete returned.__v
     delete returned.password
   }

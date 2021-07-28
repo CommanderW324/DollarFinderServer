@@ -118,14 +118,14 @@ account.get('/logout', async(request, response) => {
     }
 
     const user = await User.findOne({_id: decode.id})
-    if(user.logged === false || user.logintoken !== header.logintoken) {
+    if(user.logged === false ) {
         return response.status(401).send({error: "User not Logged in / Invalid Token for this user"})
     }
     try{
         user.logged = false
         user.logintoken = ""
         await user.save()
-        return response.status(200).send({success: Logout})
+        return response.status(200).send({success: "Logout"})
     } catch (error) {
         return response.status(404).send({error: error.message})
     }

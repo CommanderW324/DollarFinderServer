@@ -9,22 +9,107 @@ s3 = new AWS.S3({apiVersion: '2006-03-01'})
 
 
 
-postRoute.get('/', (request, response) => {
-    const content = request.body
-    const allUsers = Post.find({}).then(posts => {
-        const length = posts.length
-        const newPosts = []
-        for(let i = 0; i < length; i++) {
-            let decodeBuffer
-            if(posts[i].img !== undefined) {
-                decodeBuffer = posts[i].img.toString()
-            }
-            const post = {...posts[i].toJSON(), message: "Added" , img: decodeBuffer}
-            newPosts.push(post)
+postRoute.get("/", (request, response) => {
+    const content = request.body;
+    const sortMethod = request.headers.sortmethod;
+    console.log(request.headers.sortmethod)
+    const allUsers = Post.find({}).then((newPosts) => {
+      console.log("its me")
+      function sortJson(array, prop, propType, asc) {
+        console.log("Before")  
+        console.log(array)
+          
+        switch (propType) {
+            case "int":
+            array.sort(function (a, b) {
+              if (asc) {
+                return (a[prop]) > (b[prop])
+                  ? 1
+                  : (a[prop]) < (b[prop])
+                  ? -1
+                  : 0;
+              } else {
+                return (b[prop]) > (a[prop])
+                  ? 1
+                  : (b[prop]) < (a[prop])
+                  ? -1
+                  : 0;
+              }
+            });
+            break;
+          case "intAsString":
+            array.sort(function (a, b) {
+              if (asc) {
+                return parseInt(a[prop]) > parseInt(b[prop])
+                  ? 1
+                  : parseInt(a[prop]) < parseInt(b[prop])
+                  ? -1
+                  : 0;
+              } else {
+                return parseInt(b[prop]) > parseInt(a[prop])
+                  ? 1
+                  : parseInt(b[prop]) < parseInt(a[prop])
+                  ? -1
+                  : 0;
+              }
+            });
+            break;
+          case "string":
+            array.sort(function (a, b) {
+              if (asc) {
+                return a[prop].toLowerCase() > b[prop].toLowerCase()
+                  ? 1
+                  : a[prop].toLowerCase() < b[prop].toLowerCase()
+                  ? -1
+                  : 0;
+              } else {
+                return b[prop].toLowerCase() > a[prop].toLowerCase()
+                  ? 1
+                  : b[prop].toLowerCase() < a[prop].toLowerCase()
+                  ? -1
+                  : 0;
+              }
+            });
+            break;
+          default:
+            break;
         }
-        return response.status(200).send(newPosts)
-    })
-    
+        console.log("after")
+      console.log(array)
+      }
+      switch (sortMethod) {
+        
+        case "0":
+          sortJson(newPosts, "price", "int", true);
+          break;
+        case "1":
+          sortJson(newPosts, "price", "int", false);
+          break;
+        case "2":
+            console.log("Ive been wondering")
+          sortJson(newPosts, "date", "intAsString", false);
+          break;
+        case "3":
+          sortJson(newPosts, "date", "intAsString", true);
+          break;
+        default:
+            console.log("if after all these")
+          break;
+      }
+      
+      return response.status(200).send(newPosts);
+    }).catch(error => {
+        return response.status(401).send(error)
+    });
+  });
+postRoute.get('/:postId', async (request,response) => {
+    const postId = request.params.postId
+    const post = await Post.findOne({_id: postId}) 
+    if(!post) {
+        return response.status(401).json({error: "post not found"})
+    } else {
+       return response.status(200).send(post)
+    }
 })
 
 // postRoute.delete('/:id', async (request, response) => {
@@ -115,6 +200,7 @@ postRoute.post('/', async (request, response) => {
             location: postcontent.location,
             price: postcontent.price,
             description: postcontent.description,
+            locationUrl: postcontent.locationUrl,
             date: Date.now(),
             userId: user.id
         })
