@@ -162,7 +162,7 @@ postRoute.get('/:postId', async (request,response) => {
           }
           return response.status(200).send({post, vote: found, totalVote: post.upvoteUser.length - post.downvoteUser.length})
         }
-        return response.status(200).json(post)
+        return response.status(200).send({post, vote: 0, totalVote: post.upvoteUser.length - post.downvoteUser.length})
     }
     
     
