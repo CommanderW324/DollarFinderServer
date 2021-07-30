@@ -54,6 +54,8 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
     postSchema.set('toJSON', {
         transform: (receive, returned) => {
           returned.id = returned._id.toString()
+          delete returned.upvoteUser
+          delete returned.downvoteUser
           delete returned._id
           delete returned.__v
         }
