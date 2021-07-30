@@ -27,7 +27,7 @@ account.get('/', async (request,response) => {
     }
     // return response.status(200).send(decode)
 })
-account.post('/change', async (request, response) => {
+account.put('/change', async (request, response) => {
     const logintoken = request.headers.logintoken
     const content = request.body
     let decode

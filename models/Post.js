@@ -26,6 +26,7 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
       },
       userId: {
           type: mongoose.Schema.Types.ObjectId,
+          ref:"User"
       },
       description: {
           type: String,
@@ -44,6 +45,10 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
         type: Number
       }, downvotes: {
         type: Number
+      }, upvoteUser: {
+        type: [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}]
+      }, downvoteUser: {
+        type: [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}]
       }
     })
     postSchema.set('toJSON', {

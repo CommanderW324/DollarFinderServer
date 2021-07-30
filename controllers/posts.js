@@ -8,7 +8,49 @@ var AWS = require('aws-sdk')
 s3 = new AWS.S3({apiVersion: '2006-03-01'})
 
 
+postRoute.put('/vote', async (request,response) => {
+  const content = request.body
+  const header = request.headers
+  const logintoken = header.logintoken
+  let decode
+  try{
+      decode = token.verify(logintoken, process.env.SECRET)
+  } catch {
+      return response.status(401).send({error: "Invalid token"})
+  }
+  const userId = decode.id
+  const postId = content.postId
+  const userVoting = await User.findOne({_id: userId})
+  const editPost = await Post.findOne({_id: postId})
+  if(!editPost) {
+    return response.status(401).send({error: "No post found"})
+  }
+  if(userVoting) {
+      const vote = content.vote
+      
+      editPost.upvoteUser = editPost.upvoteUser.filter(x => x.toString() !== userId)
+      editPost.downvoteUser = editPost.downvoteUser.filter(x => x.toString() !== userId)
+      if(vote === 1) {
+          editPost.upvoteUser.push(userId)
+      } else if(vote === -1) {
+          editPost.downvoteUser.push(userId)
+      } else if( vote === 0) {
+          
+      } else {
+          return response.status(401).end()
+      }
+      try{
+        const save = await editPost.save()
+      } catch(e) {
+        return response.status(400).send(e)
+      }
+        return response.status(200).end()
+      }
+       else {
+    return response.status(400).send({error: "User not found"})
+  }
 
+})
 postRoute.get("/", (request, response) => {
     const content = request.body;
     const sortMethod = request.headers.sortmethod;
@@ -98,12 +140,32 @@ postRoute.get("/", (request, response) => {
   });
 postRoute.get('/:postId', async (request,response) => {
     const postId = request.params.postId
+    const logintoken = request.headers.logintoken
     const post = await Post.findOne({_id: postId}) 
     if(!post) {
         return response.status(401).json({error: "post not found"})
     } else {
-       return response.status(200).send(post)
+        let sendPost
+        if(logintoken) {
+          let decode
+          try{
+            decode = token.verify(logintoken, process.env.SECRET)
+          } catch {
+             return response.status(401).send({error: "Invalid token"})
+        }
+          const userId = decode.id
+          let found = 0
+          if(post.upvoteUser.find(x => x.toString() === userId)) {
+            found = 1
+          } else if(post.downvoteUser.find(x=> x.toString() === userId)) {
+            found = -1
+          }
+          return response.status(200).send({post, vote: found, totalVote: post.upvoteUser.length - post.downvoteUser.length})
+        }
+        return response.status(200).json(post)
     }
+    
+    
 })
 
 postRoute.delete('/:id', async (request, response) => {
@@ -198,7 +260,9 @@ postRoute.post('/', async (request, response) => {
             description: postcontent.description,
             locationUrl: postcontent.locationUrl,
             date: Date.now(),
-            userId: user.id
+            userId: user.id,
+            upvoteUser: [],
+            downvoteUser: []
         })
         const save = await newPost.save()
         
