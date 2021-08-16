@@ -3,15 +3,8 @@ const mongoose = require('mongoose')
 const User = require('../models/User')
 
 const url = process.env.MONGODB_URI
-
-console.log('connecting to', url)
-
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
-  .then(result => {
-    console.log('You have connected to MongoDB')
-  })
-  .catch((error) => {
-    console.log('error:', error.message)
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true }).catch((error) => {
+    console.log(error.message)
   })
 
   const postSchema = new mongoose.Schema({
